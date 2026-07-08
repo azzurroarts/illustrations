@@ -418,4 +418,12 @@ body {
 
   transform: translate(1px,1px);
 }
-
+#artistCVButton.xp-button {
+  display: inline-block !important;
+  width: fit-content !important;
+  max-width: fit-content !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  box-sizing: border-box;
+}
