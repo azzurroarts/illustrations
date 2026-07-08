@@ -261,3 +261,52 @@ for (let i = 0; i < 90; i++) {
     img.onload = sampleColours;
   }
 }
+// ---------------- RAINBOW PIXEL FAIRY DUST ----------------
+const fairyColours = [
+  '#ff9ad5',
+  '#ffb86b',
+  '#fff176',
+  '#9cffb1',
+  '#8be9fd',
+  '#b39ddb',
+  '#ff80ab'
+];
+
+let fairyDustTick = 0;
+
+document.addEventListener('mousemove', (e) => {
+  // not on touch devices, because phones deserve mercy
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
+  fairyDustTick++;
+
+  // lower number = more chaos. 2 is cute. 1 is full glitter goblin.
+  if (fairyDustTick % 2 !== 0) return;
+
+  createFairyPixel(e.clientX, e.clientY);
+});
+
+function createFairyPixel(x, y) {
+  const pixel = document.createElement('span');
+  pixel.className = 'fairy-pixel';
+
+  const colour = fairyColours[Math.floor(Math.random() * fairyColours.length)];
+  const size = 5 + Math.random() * 9;
+  const driftX = (Math.random() - 0.5) * 80;
+  const driftY = (Math.random() - 0.5) * 80;
+
+  pixel.style.left = x + (Math.random() - 0.5) * 18 + 'px';
+  pixel.style.top = y + (Math.random() - 0.5) * 18 + 'px';
+  pixel.style.width = size + 'px';
+  pixel.style.height = size + 'px';
+  pixel.style.background = colour;
+  pixel.style.color = colour;
+  pixel.style.setProperty('--drift-x', driftX + 'px');
+  pixel.style.setProperty('--drift-y', driftY + 'px');
+
+  document.body.appendChild(pixel);
+
+  setTimeout(() => {
+    pixel.remove();
+  }, 950);
+}
