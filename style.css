@@ -325,9 +325,9 @@ body {
   transform: none;
   pointer-events: auto;
 
-  background: #000 !important;
-  color: #fff !important;
-  border: 2px solid #000 !important;
+  background: #000;
+  color: #fff;
+  border: 3px solid #fff;
 
   padding: 10px 16px;
   font-weight: 900;
@@ -340,7 +340,7 @@ body {
 }
 
 .overlay-link:hover {
-  background: #fff !important;
-  color: #000 !important;
-  border-color: #fff !important;
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
