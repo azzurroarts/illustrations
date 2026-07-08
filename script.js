@@ -77,11 +77,13 @@ function csvToArray(str) {
     const clean = line.replace('\r', '');
     const values = clean.split(',').map(v => v.trim());
 
-    return {
-      FileName: values[0],
-      Category: values[1],
-      Title: values[2]
-    };
+   return {
+  FileName: values[0],
+  Category: values[1],
+  Title: values[2],
+  LinkLabel: values[3],
+  Link: values[4]
+};
   });
 }
 
