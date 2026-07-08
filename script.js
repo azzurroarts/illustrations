@@ -8,24 +8,13 @@ const overlay = document.createElement('div');
 overlay.className = 'fullscreen-overlay';
 document.body.appendChild(overlay);
 
-const floatingCategory = document.getElementById('floating-category');
-
 overlay.addEventListener('click', () => {
   overlay.classList.remove('active');
-  floatingCategory.style.opacity = 0;
 
-  const img = overlay.querySelector('img');
-  if (!img) return;
-
-  const rect = img.dataset.originalRect && JSON.parse(img.dataset.originalRect);
-
-  if (rect) {
-    img.style.transform =
-      `translate(${rect.left}px, ${rect.top}px)
-       scale(${rect.width / img.naturalWidth}, ${rect.height / img.naturalHeight})`;
-  }
-
-  setTimeout(() => overlay.innerHTML = '', 350);
+  setTimeout(() => {
+    overlay.innerHTML = '';
+    overlay.style.background = '';
+  }, 350);
 });
 
 // ---------------- OBSERVER (LAZY LOAD) ----------------
@@ -71,27 +60,26 @@ function init() {
 // ---------------- CSV ----------------
 function csvToArray(str) {
   const lines = str.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
 
   return lines.slice(1).map(line => {
     const clean = line.replace('\r', '');
     const values = clean.split(',').map(v => v.trim());
 
-   return {
-  FileName: values[0],
-  Category: values[1],
-  ArtworkName: values[2],
-  Year: values[3],
-  Title: values[4],
-  LinkLabel: values[5],
-  Link: values[6]
-};
+    return {
+      FileName: values[0],
+      Category: values[1],
+      ArtworkName: values[2],
+      Year: values[3],
+      Title: values[4],
+      LinkLabel: values[5],
+      Link: values[6]
+    };
   });
 }
 
 // ---------------- CATEGORIES ----------------
 function renderCategories() {
-  const categories = ['All', ...new Set(artData.map(a => a.Category))];
+  const categories = ['All', ...new Set(artData.map(a => a.Category).filter(Boolean))];
 
   const container = document.getElementById('categories');
   container.innerHTML = '';
@@ -119,7 +107,17 @@ function renderGallery(filter, searchQuery = '') {
 
   const filtered = artData
     .filter(a => filter === 'All' || a.Category === filter)
-    .filter(a => (a.Title || '').toLowerCase().includes(searchQuery));
+    .filter(a => {
+      const searchable = [
+        a.FileName,
+        a.Category,
+        a.ArtworkName,
+        a.Year,
+        a.Title
+      ].join(' ').toLowerCase();
+
+      return searchable.includes(searchQuery);
+    });
 
   filtered.forEach(a => {
     const img = document.createElement('img');
@@ -128,7 +126,7 @@ function renderGallery(filter, searchQuery = '') {
 
     img.dataset.src = src;
     img.dataset.full = src;
-    img.alt = a.Title;
+    img.alt = a.ArtworkName || a.Title || '';
     img.loading = 'lazy';
 
     img.classList.add('gallery-img');
@@ -136,54 +134,125 @@ function renderGallery(filter, searchQuery = '') {
     observer.observe(img);
 
     img.addEventListener('click', () => {
-    floatingCategory.innerHTML = `
-  <span style="font-weight:700">${a.Category}</span>
-  <span style="opacity:0.7; margin-left:8px;">${a.Year || ''}</span>
-`;
-
-      floatingCategory.textContent = a.Category;
-      floatingCategory.style.opacity = 1;
-
-      const zoomImg = document.createElement('img');
-      zoomImg.src = img.dataset.full;
-
-      const rect = img.getBoundingClientRect();
-      zoomImg.dataset.originalRect = JSON.stringify(rect);
-
-      zoomImg.style.position = 'fixed';
-      zoomImg.style.left = rect.left + 'px';
-      zoomImg.style.top = rect.top + 'px';
-      zoomImg.style.width = rect.width + 'px';
-      zoomImg.style.height = rect.height + 'px';
-      zoomImg.style.transition = 'all 0.35s ease';
-
-      overlay.innerHTML = '';
-overlay.appendChild(zoomImg);
-
-if (a.Link) {
-  const link = document.createElement('a');
-  link.href = a.Link;
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-  link.className = 'overlay-link';
-  link.textContent = a.LinkLabel || 'View more';
-
-  link.addEventListener('click', e => e.stopPropagation());
-
-  overlay.appendChild(link);
-}
-
-overlay.classList.add('active');
-
-      requestAnimationFrame(() => {
-        zoomImg.style.left = '50%';
-        zoomImg.style.top = '50%';
-        zoomImg.style.transform = 'translate(-50%, -50%) scale(1)';
-        zoomImg.style.width = '';
-        zoomImg.style.height = '';
-      });
+      openZoom(img, a);
     });
 
     gallery.appendChild(img);
   });
+}
+
+// ---------------- ZOOM MODE ----------------
+function openZoom(img, a) {
+  overlay.innerHTML = '';
+
+  const zoomBg = document.createElement('div');
+  zoomBg.className = 'zoom-bg';
+
+  const zoomWrap = document.createElement('div');
+  zoomWrap.className = 'zoom-wrap';
+
+  const zoomImg = document.createElement('img');
+  zoomImg.src = img.dataset.full || img.src;
+  zoomImg.alt = a.ArtworkName || a.Title || '';
+
+  zoomWrap.appendChild(zoomImg);
+
+  const info = document.createElement('div');
+  info.className = 'zoom-info';
+
+  if (a.ArtworkName) {
+    const name = document.createElement('div');
+    name.className = 'zoom-title';
+    name.textContent = a.ArtworkName;
+    info.appendChild(name);
+  }
+
+  if (a.Year) {
+    const year = document.createElement('div');
+    year.className = 'zoom-year';
+    year.textContent = a.Year;
+    info.appendChild(year);
+  }
+
+  if (a.Link) {
+    const link = document.createElement('a');
+    link.href = a.Link;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.className = 'overlay-link';
+    link.textContent = a.LinkLabel || 'View more';
+
+    link.addEventListener('click', e => e.stopPropagation());
+
+    info.appendChild(link);
+  }
+
+  overlay.appendChild(zoomBg);
+  overlay.appendChild(zoomWrap);
+  overlay.appendChild(info);
+
+  overlay.classList.add('active');
+
+  setZoomColours(zoomImg, zoomBg);
+}
+
+// ---------------- COLOUR BACKGROUND ----------------
+function setZoomColours(img, bgEl) {
+  function sampleColours() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 40;
+    canvas.height = 40;
+
+    try {
+      ctx.drawImage(img, 0, 0, 40, 40);
+
+      const data = ctx.getImageData(0, 0, 40, 40).data;
+      const colours = {};
+
+      for (let i = 0; i < data.length; i += 16) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        if (r + g + b > 720 || r + g + b < 80) continue;
+
+        const key = `${Math.round(r / 40) * 40},${Math.round(g / 40) * 40},${Math.round(b / 40) * 40}`;
+        colours[key] = (colours[key] || 0) + 1;
+      }
+
+      const topColours = Object.entries(colours)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([colour]) => `rgb(${colour})`);
+
+      const c1 = topColours[0] || '#222';
+      const c2 = topColours[1] || '#555';
+      const c3 = topColours[2] || '#999';
+
+      bgEl.style.background = `
+        radial-gradient(circle at 20% 30%, ${c1}, transparent 35%),
+        radial-gradient(circle at 80% 40%, ${c2}, transparent 35%),
+        radial-gradient(circle at 50% 80%, ${c3}, transparent 40%),
+        repeating-linear-gradient(
+          45deg,
+          ${c1} 0px,
+          ${c1} 12px,
+          ${c2} 12px,
+          ${c2} 24px,
+          ${c3} 24px,
+          ${c3} 36px
+        )
+      `;
+    } catch (err) {
+      bgEl.style.background = '#111';
+    }
+  }
+
+  if (img.complete) {
+    sampleColours();
+  } else {
+    img.onload = sampleColours;
+  }
 }
