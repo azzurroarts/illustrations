@@ -198,17 +198,40 @@ function openZoom(img, a) {
 
 // ---------------- COLOUR BACKGROUND ----------------
 function setZoomColours(img, bgEl) {
+  function boostColour(r, g, b) {
+    const avg = (r + g + b) / 3;
+
+    r = avg + (r - avg) * 1.8;
+    g = avg + (g - avg) * 1.8;
+    b = avg + (b - avg) * 1.8;
+
+    const max = Math.max(r, g, b);
+
+    if (max < 185) {
+      const boost = 185 / Math.max(max, 1);
+      r *= boost;
+      g *= boost;
+      b *= boost;
+    }
+
+    r = Math.min(255, Math.max(70, Math.round(r)));
+    g = Math.min(255, Math.max(70, Math.round(g)));
+    b = Math.min(255, Math.max(70, Math.round(b)));
+
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
   function sampleColours() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = 40;
-    canvas.height = 40;
+    canvas.width = 50;
+    canvas.height = 50;
 
     try {
-      ctx.drawImage(img, 0, 0, 40, 40);
+      ctx.drawImage(img, 0, 0, 50, 50);
 
-      const data = ctx.getImageData(0, 0, 40, 40).data;
+      const data = ctx.getImageData(0, 0, 50, 50).data;
       const colours = {};
 
       for (let i = 0; i < data.length; i += 16) {
@@ -216,42 +239,63 @@ function setZoomColours(img, bgEl) {
         const g = data[i + 1];
         const b = data[i + 2];
 
-        if (r + g + b > 720 || r + g + b < 80) continue;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const saturation = max - min;
+        const brightness = max;
 
-        const key = `${Math.round(r / 40) * 40},${Math.round(g / 40) * 40},${Math.round(b / 40) * 40}`;
-        colours[key] = (colours[key] || 0) + 1;
+        // no dark goblin colours
+        if (brightness < 95) continue;
+
+        // no grey sludge
+        if (saturation < 45) continue;
+
+        // no muddy brown
+        if (
+          r > g &&
+          g > b &&
+          saturation < 95 &&
+          brightness < 200
+        ) continue;
+
+        const key = `${Math.round(r / 36) * 36},${Math.round(g / 36) * 36},${Math.round(b / 36) * 36}`;
+
+        colours[key] = (colours[key] || 0) + 1 + saturation / 50 + brightness / 170;
       }
 
       const topColours = Object.entries(colours)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3)
-        .map(([colour]) => `rgb(${colour})`);
+        .map(([colour]) => {
+          const [r, g, b] = colour.split(',').map(Number);
+          return boostColour(r, g, b);
+        });
 
-      const c1 = topColours[0] || '#222';
-      const c2 = topColours[1] || '#555';
-      const c3 = topColours[2] || '#999';
+      const c1 = topColours[0] || 'rgb(255, 90, 200)';
+      const c2 = topColours[1] || 'rgb(90, 220, 255)';
+      const c3 = topColours[2] || 'rgb(255, 225, 80)';
 
       bgEl.innerHTML = '';
 
-for (let i = 0; i < 90; i++) {
-  const pixel = document.createElement('span');
-  pixel.className = 'zoom-pixel';
+      for (let i = 0; i < 90; i++) {
+        const pixel = document.createElement('span');
+        pixel.className = 'zoom-pixel';
 
-  const colour = [c1, c2, c3][i % 3];
+        const colour = [c1, c2, c3][i % 3];
 
-  pixel.style.background = colour;
-  pixel.style.left = Math.random() * 100 + '%';
-  pixel.style.top = Math.random() * 100 + '%';
-  pixel.style.width = 30 + Math.random() * 120 + 'px';
-  pixel.style.height = pixel.style.width;
-  pixel.style.animationDelay = Math.random() * -12 + 's';
-  pixel.style.animationDuration = 8 + Math.random() * 14 + 's';
-  pixel.style.opacity = 0.18 + Math.random() * 0.45;
+        pixel.style.background = colour;
+        pixel.style.left = Math.random() * 100 + '%';
+        pixel.style.top = Math.random() * 100 + '%';
+        pixel.style.width = 30 + Math.random() * 120 + 'px';
+        pixel.style.height = pixel.style.width;
+        pixel.style.animationDelay = Math.random() * -12 + 's';
+        pixel.style.animationDuration = 8 + Math.random() * 14 + 's';
+        pixel.style.opacity = 0.2 + Math.random() * 0.5;
 
-  bgEl.appendChild(pixel);
-}
+        bgEl.appendChild(pixel);
+      }
     } catch (err) {
-      bgEl.style.background = '#111';
+      bgEl.innerHTML = '';
     }
   }
 
