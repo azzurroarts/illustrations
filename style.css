@@ -418,15 +418,4 @@ body {
 
   transform: translate(1px,1px);
 }
-/* ---------------- WINDOWS XP SIZING FOR DOC ICON ---------------- */
-.xp-doc {
-    width: 18px;
-    height: 18px;
 
-    flex-shrink: 0;
-
-    image-rendering: pixelated;
-    object-fit: contain;
-
-    display: block;
-}
