@@ -344,3 +344,32 @@ body {
   color: #000;
   border-color: #fff;
 }
+/* ---------------- RAINBOW PIXEL FAIRY DUST ---------------- */
+
+.fairy-pixel {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  z-index: 100000;
+  transform: rotate(45deg);
+  animation: fairyPixelFade 900ms ease-out forwards;
+  box-shadow: 0 0 8px currentColor, 0 0 18px currentColor;
+}
+
+@keyframes fairyPixelFade {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.2) rotate(45deg);
+  }
+
+  60% {
+    opacity: 0.85;
+    transform: translate(var(--drift-x), var(--drift-y)) scale(0.8) rotate(120deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--drift-x) * 1.6), calc(var(--drift-y) * 1.6)) scale(0) rotate(220deg);
+  }
+}
