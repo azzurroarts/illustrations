@@ -427,3 +427,12 @@ body {
   align-self: flex-start !important;
   box-sizing: border-box;
 }
+@media (max-width: 768px) {
+  #artistCVButton.xp-button {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: fit-content !important;
+    min-width: 0 !important;
+    align-self: flex-start !important;
+  }
+}
