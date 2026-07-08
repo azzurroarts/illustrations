@@ -236,26 +236,7 @@ body {
   transform: scale(1.05);
 }
 
-.overlay-link {
-  position: static;
-  transform: none;
-  pointer-events: auto;
-  background: #000;
-  color: #fff;
-  border: 2px solid #000;
-  padding: 10px 16px;
-  font-weight: 900;
-  text-transform: uppercase;
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  font-size: 14px;
-}
 
-.overlay-link:hover {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
-}
 .fullscreen-overlay {
   background: #111;
   overflow: hidden;
@@ -339,23 +320,27 @@ body {
   font-size: 12px;
   opacity: 0.9;
 }
-
 .overlay-link {
   position: static;
   transform: none;
   pointer-events: auto;
-  background: #fff;
-  color: #000;
-  border: 2px solid #fff;
+
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #000 !important;
+
   padding: 10px 16px;
   font-weight: 900;
   text-transform: uppercase;
   text-decoration: none;
   letter-spacing: 0.04em;
   font-size: 14px;
+
+  transition: all .2s ease;
 }
 
 .overlay-link:hover {
-  background: #000;
-  color: #fff;
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #fff !important;
 }
