@@ -80,9 +80,11 @@ function csvToArray(str) {
    return {
   FileName: values[0],
   Category: values[1],
-  Title: values[2],
-  LinkLabel: values[3],
-  Link: values[4]
+  ArtworkName: values[2],
+  Year: values[3],
+  Title: values[4],
+  LinkLabel: values[5],
+  Link: values[6]
 };
   });
 }
