@@ -231,20 +231,25 @@ function setZoomColours(img, bgEl) {
       const c2 = topColours[1] || '#555';
       const c3 = topColours[2] || '#999';
 
-      bgEl.style.background = `
-        radial-gradient(circle at 20% 30%, ${c1}, transparent 35%),
-        radial-gradient(circle at 80% 40%, ${c2}, transparent 35%),
-        radial-gradient(circle at 50% 80%, ${c3}, transparent 40%),
-        repeating-linear-gradient(
-          45deg,
-          ${c1} 0px,
-          ${c1} 12px,
-          ${c2} 12px,
-          ${c2} 24px,
-          ${c3} 24px,
-          ${c3} 36px
-        )
-      `;
+      bgEl.innerHTML = '';
+
+for (let i = 0; i < 90; i++) {
+  const pixel = document.createElement('span');
+  pixel.className = 'zoom-pixel';
+
+  const colour = [c1, c2, c3][i % 3];
+
+  pixel.style.background = colour;
+  pixel.style.left = Math.random() * 100 + '%';
+  pixel.style.top = Math.random() * 100 + '%';
+  pixel.style.width = 30 + Math.random() * 120 + 'px';
+  pixel.style.height = pixel.style.width;
+  pixel.style.animationDelay = Math.random() * -12 + 's';
+  pixel.style.animationDuration = 8 + Math.random() * 14 + 's';
+  pixel.style.opacity = 0.18 + Math.random() * 0.45;
+
+  bgEl.appendChild(pixel);
+}
     } catch (err) {
       bgEl.style.background = '#111';
     }
