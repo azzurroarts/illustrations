@@ -156,8 +156,22 @@ function renderGallery(filter, searchQuery = '') {
       zoomImg.style.transition = 'all 0.35s ease';
 
       overlay.innerHTML = '';
-      overlay.appendChild(zoomImg);
-      overlay.classList.add('active');
+overlay.appendChild(zoomImg);
+
+if (a.Link) {
+  const link = document.createElement('a');
+  link.href = a.Link;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.className = 'overlay-link';
+  link.textContent = a.LinkLabel || 'View more';
+
+  link.addEventListener('click', e => e.stopPropagation());
+
+  overlay.appendChild(link);
+}
+
+overlay.classList.add('active');
 
       requestAnimationFrame(() => {
         zoomImg.style.left = '50%';
