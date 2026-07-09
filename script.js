@@ -367,3 +367,86 @@ function createFairyPixel(x, y) {
     pixel.remove();
   }, 950);
 }
+
+// ---------------- STAR COUNTER ----------------
+
+function updateStarCounter() {
+  const counter = document.getElementById('star-counter');
+  if (!counter) return;
+
+  const count = viewedArtworks.size;
+  counter.textContent = `⭐ ${count} / ${STAR_GOAL}`;
+
+  if (count >= STAR_GOAL) {
+    counter.textContent = '🎁 Prize unlocked';
+    counter.classList.add('prize-ready');
+  }
+}
+
+function awardStar(fileName) {
+  if (!fileName || viewedArtworks.has(fileName)) return;
+
+  viewedArtworks.add(fileName);
+  localStorage.setItem(STAR_STORAGE_KEY, JSON.stringify([...viewedArtworks]));
+
+  updateStarCounter();
+  showStarFloat();
+
+  const counter = document.getElementById('star-counter');
+  if (counter) {
+    counter.classList.remove('star-bump');
+    void counter.offsetWidth;
+    counter.classList.add('star-bump');
+  }
+
+  if (viewedArtworks.size === STAR_GOAL) {
+    setTimeout(showPrizeModal, 500);
+  }
+}
+
+function showStarFloat() {
+  const counter = document.getElementById('star-counter');
+  if (!counter) return;
+
+  const rect = counter.getBoundingClientRect();
+
+  const float = document.createElement('div');
+  float.className = 'star-float';
+  float.textContent = '+1 ⭐';
+  float.style.left = rect.left + rect.width / 2 - 18 + 'px';
+  float.style.top = rect.top + rect.height + 8 + 'px';
+
+  document.body.appendChild(float);
+
+  setTimeout(() => float.remove(), 950);
+}
+
+function showPrizeModal() {
+  const prize = document.getElementById('star-prize');
+  if (!prize) return;
+
+  prize.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateStarCounter();
+
+  const counter = document.getElementById('star-counter');
+  const prize = document.getElementById('star-prize');
+
+  if (counter) {
+    counter.addEventListener('click', () => {
+      if (viewedArtworks.size >= STAR_GOAL) {
+        showPrizeModal();
+      }
+    });
+  }
+
+  if (prize) {
+    prize.addEventListener('click', (e) => {
+      if (e.target === prize) {
+        prize.classList.remove('active');
+      }
+    });
+  }
+});
