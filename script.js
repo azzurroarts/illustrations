@@ -14,7 +14,6 @@ overlay.className = 'fullscreen-overlay';
 document.body.appendChild(overlay);
 
 overlay.addEventListener('click', () => {
-  awardStar(a.FileName);
   overlay.classList.remove('active');
 
   setTimeout(() => {
