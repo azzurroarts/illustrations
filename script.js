@@ -147,7 +147,6 @@ function renderGallery(filter, searchQuery = '') {
 
     img.addEventListener('click', () => {
       openZoom(img, a);
-      awardStar(a.FileName);
     });
 
     gallery.appendChild(img);
@@ -156,6 +155,7 @@ function renderGallery(filter, searchQuery = '') {
 
 // ---------------- ZOOM MODE ----------------
 function openZoom(img, a) {
+  awardStar(a.FileName);
   overlay.innerHTML = '';
 
   const zoomBg = document.createElement('div');
