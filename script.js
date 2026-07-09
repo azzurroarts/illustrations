@@ -147,6 +147,7 @@ function renderGallery(filter, searchQuery = '') {
 
     img.addEventListener('click', () => {
       openZoom(img, a);
+      awardStar(a.FileName);
     });
 
     gallery.appendChild(img);
