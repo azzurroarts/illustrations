@@ -2,13 +2,19 @@ const csvFile = 'art.csv';
 
 let artData = [];
 let currentCategory = 'All';
+const STAR_GOAL = 50;
+const STAR_STORAGE_KEY = 'azzurro-viewed-artworks';
 
+let viewedArtworks = new Set(
+  JSON.parse(localStorage.getItem(STAR_STORAGE_KEY) || '[]')
+);
 // ---------------- OVERLAY ----------------
 const overlay = document.createElement('div');
 overlay.className = 'fullscreen-overlay';
 document.body.appendChild(overlay);
 
 overlay.addEventListener('click', () => {
+  awardStar(a.FileName);
   overlay.classList.remove('active');
 
   setTimeout(() => {
