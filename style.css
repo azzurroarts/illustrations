@@ -235,7 +235,6 @@ body {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   cursor: pointer;
-transform: scale(1.06);
 transition: transform 0.25s ease;
 }
 
