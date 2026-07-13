@@ -4,6 +4,7 @@ let artData = [];
 let currentCategory = 'All';
 const STAR_GOAL = 50;
 const STAR_STORAGE_KEY = 'azzurro-viewed-artworks';
+const POSTCARD_JOINED_KEY = 'azzurro-postcard-club-joined';
 
 let viewedArtworks = new Set(
   JSON.parse(localStorage.getItem(STAR_STORAGE_KEY) || '[]')
@@ -425,8 +426,46 @@ function showPrizeModal() {
   const prize = document.getElementById('star-prize');
   if (!prize) return;
 
+  updatePostcardClubState();
   prize.classList.add('active');
 }
+function updatePostcardClubState() {
+  const formPanel = document.getElementById('postcard-form-panel');
+  const joinedPanel = document.getElementById('postcard-joined-panel');
+
+  if (!formPanel || !joinedPanel) return;
+
+  const alreadyJoined =
+    localStorage.getItem(POSTCARD_JOINED_KEY) === 'yes';
+
+  if (alreadyJoined) {
+    formPanel.hidden = true;
+    joinedPanel.hidden = false;
+  } else {
+    formPanel.hidden = false;
+    joinedPanel.hidden = true;
+  }
+}
+
+/*
+Typeform calls this only after a successful submission.
+
+It must be attached to window because the Typeform embed
+looks for the callback in global scope.
+*/
+window.handlePostcardSubmit = function ({ formId, responseId }) {
+  localStorage.setItem(POSTCARD_JOINED_KEY, 'yes');
+
+  console.log(
+    `Postcard Club joined through form ${formId}. Response: ${responseId}`
+  );
+
+  /*
+  Deliberately do not replace the Typeform immediately.
+  This lets its lovely ending screen remain visible
+  for the current session.
+  */
+};
 
 document.addEventListener('DOMContentLoaded', () => {
 
