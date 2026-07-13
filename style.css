@@ -236,12 +236,12 @@ body {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   cursor: pointer;
-  border-radius: 2px;
-  transition: transform 0.25s ease;
+transform: scale(1.06);
+transition: transform 0.25s ease;
 }
 
 .gallery-img:hover {
-  transform: scale(1.05);
+  transform: scale(1.11);
 }
 
 
