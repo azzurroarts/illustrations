@@ -169,6 +169,10 @@ body {
 /* ---------------- MOBILE RESPONSIVE ---------------- */
 @media (max-width: 768px) {
   body {
+    #star-counter {
+    top: 80px;
+    right: 10px;
+}
     flex-direction: column;
   }
 
