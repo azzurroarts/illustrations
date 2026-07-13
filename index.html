@@ -105,9 +105,33 @@
       </p>
 
       <!-- TYPEFORM EMBED -->
-      <div class="postcard-typeform">
-        <div data-tf-live="01KXD5DTXYWK3CST9QCK4STX6S"></div>
-      </div>
+   <!-- TYPEFORM: shown before they join -->
+<div id="postcard-form-panel">
+  <div class="postcard-typeform">
+    <div
+      data-tf-live="01KXD5DTXYWK3CST9QCK4STX6S"
+      data-tf-on-submit="handlePostcardSubmit"
+    ></div>
+  </div>
+</div>
+
+<!-- ALREADY JOINED: shown on later visits -->
+<div id="postcard-joined-panel" hidden>
+  <div class="postcard-joined-icon">⭐</div>
+
+  <div class="postcard-joined-title">
+    Already joined!
+  </div>
+
+  <p class="postcard-joined-text">
+    You’re already in the Postcard Club.
+  </p>
+
+  <p class="postcard-joined-small">
+    No need to sign up again, you magnificent completionist.
+    Keep an eye on your inbox for whatever strange little art surprise happens next.
+  </p>
+</div>
 
     </div>
   </div>
