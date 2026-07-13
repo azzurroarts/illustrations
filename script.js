@@ -378,7 +378,7 @@ function updateStarCounter() {
   counter.textContent = `⭐ ${count} / ${STAR_GOAL}`;
 
   if (count >= STAR_GOAL) {
-    counter.textContent = '🎁 Prize unlocked';
+    counter.textContent = '🎁 Postcard Club';
     counter.classList.add('prize-ready');
   }
 }
@@ -429,11 +429,14 @@ function showPrizeModal() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
   updateStarCounter();
 
   const counter = document.getElementById('star-counter');
   const prize = document.getElementById('star-prize');
+  const closeButton = document.getElementById('star-prize-close');
 
+  // Clicking the counter reopens the Postcard Club once unlocked.
   if (counter) {
     counter.addEventListener('click', () => {
       if (viewedArtworks.size >= STAR_GOAL) {
@@ -442,6 +445,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // X button
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      prize.classList.remove('active');
+    });
+  }
+
+  // Click outside white panel
   if (prize) {
     prize.addEventListener('click', (e) => {
       if (e.target === prize) {
@@ -449,4 +460,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ESC closes popup
+  document.addEventListener('keydown', (e) => {
+    if (
+      e.key === 'Escape' &&
+      prize &&
+      prize.classList.contains('active')
+    ) {
+      prize.classList.remove('active');
+    }
+  });
+
 });
