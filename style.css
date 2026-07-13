@@ -661,3 +661,56 @@ This gives it enough vertical room to function properly.
     padding: 6px 10px;
   }
 }
+
+/* ---------------- POSTCARD CLUB: ALREADY JOINED ---------------- */
+
+#postcard-joined-panel {
+  padding: 34px 18px 26px;
+  text-align: center;
+}
+
+#postcard-joined-panel[hidden] {
+  display: none;
+}
+
+#postcard-form-panel[hidden] {
+  display: none;
+}
+
+.postcard-joined-icon {
+  margin-bottom: 10px;
+  font-size: 48px;
+  line-height: 1;
+  animation: postcardJoinedStar 1.8s ease-in-out infinite alternate;
+}
+
+.postcard-joined-title {
+  margin-bottom: 10px;
+  font-size: 26px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.postcard-joined-text {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.postcard-joined-small {
+  max-width: 460px;
+  margin: 0 auto;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@keyframes postcardJoinedStar {
+  from {
+    transform: scale(1) rotate(-4deg);
+  }
+
+  to {
+    transform: scale(1.16) rotate(5deg);
+  }
+}
