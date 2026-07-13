@@ -1,57 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AZZURRO Portfolio</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AZZURRO Illustration Portfolio</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<!-- SIDEBAR -->
+
+  <!-- STAR COUNTER -->
+  <div id="star-counter">⭐ 0 / 50</div>
+
+  <!-- SIDEBAR -->
   <div id="sidebar">
-    <!-- ILLUSTRATIONS LOGO tiny edit -->
-    <img src="images/illustrations1.png" id="sidebar-logo" alt="Illustration logo">
-  <!-- signature- make this handwritten? -->
-    <div class="sidebar-title">by the artist AZZURRO</div>
-    <!-- simple email text link -->
-<div class="sidebar-subtitle">azzurroarts@gmail.com</div>
-<!-- ARTIST CV BUTTON IN WINDOWS XP STYLE -->
+
+    <img
+      src="images/illustrations1.png"
+      id="sidebar-logo"
+      alt="AZZURRO illustration logo"
+    >
+
+    <div class="sidebar-title">
+      by the artist AZZURRO
+    </div>
+
+    <div class="sidebar-subtitle">
+      azzurroarts@gmail.com
+    </div>
+
     <a
-  href="https://drive.google.com/drive/folders/1VdxbX5lhX3KSwzo4dSjNtNu71ZIHQP-z?usp=sharing"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="xp-button"
->
-
-    artist CV
-</a>
-
+      id="artistCVButton"
+      href="https://drive.google.com/drive/folders/1VdxbX5lhX3KSwzo4dSjNtNu71ZIHQP-z?usp=sharing"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="xp-button"
+    >
+      artist CV
+    </a>
 
     <div id="search-container">
-      <input type="text" id="search" placeholder="Search all..." />
+      <input
+        type="text"
+        id="search"
+        placeholder="Search all..."
+      >
     </div>
 
     <div id="categories"></div>
+
   </div>
 
+  <!-- MAIN GALLERY -->
   <div id="main">
     <div id="gallery"></div>
   </div>
 
-  <!-- Floating category name when an image is clicked -->
+  <!-- OLD FLOATING CATEGORY ELEMENT -->
   <div id="floating-category"></div>
 
-<script src="script.js"></script>
-</body>
-  <div id="star-counter">⭐ 0 / 50</div>
+  <!-- 50 STAR REWARD -->
+  <div
+    id="star-prize"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="star-prize-title"
+  >
+    <div class="star-prize-box">
 
-<div id="star-prize">
-  <div class="star-prize-box">
-    <div class="star-prize-title">⭐ Prize unlocked!</div>
-    <div class="star-prize-text">You looked at 50 artworks. Absolute colour goblin behaviour.</div>
-    <a href="https://drive.google.com/YOUR_PRIZE_LINK_HERE" target="_blank" rel="noopener noreferrer">
-      Claim prize
-    </a>
+      <button
+        id="star-prize-close"
+        class="star-prize-close"
+        type="button"
+        aria-label="Close Postcard Club invitation"
+      >
+        ×
+      </button>
+
+      <div
+        id="star-prize-title"
+        class="star-prize-title"
+      >
+        ⭐ You found 50 artworks!
+      </div>
+
+      <p class="star-prize-intro">
+        That is frankly heroic behaviour.
+      </p>
+
+      <p class="star-prize-text">
+        You’ve unlocked an invitation to my very occasional
+        <strong>Postcard Club</strong>.
+      </p>
+
+      <p class="star-prize-text">
+        Little art updates, strange discoveries and surprises sent
+        from wherever in the world I happen to be.
+      </p>
+
+      <p class="star-prize-small">
+        No schedule. No spam. Just the occasional hello from somewhere interesting.
+      </p>
+
+      <!-- TYPEFORM EMBED -->
+      <div class="postcard-typeform">
+        <div data-tf-live="01KXD5DTXYWK3CST9QCK4STX6S"></div>
+      </div>
+
+    </div>
   </div>
-</div>
+
+  <!-- TYPEFORM EMBED LOADER -->
+  <script src="https://embed.typeform.com/next/embed.js"></script>
+
+  <!-- YOUR SITE SCRIPT -->
+  <script src="script.js"></script>
+
+</body>
 </html>
