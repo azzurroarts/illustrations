@@ -5,6 +5,9 @@ let currentCategory = 'All';
 const STAR_GOAL = 50;
 const STAR_STORAGE_KEY = 'azzurro-viewed-artworks';
 const POSTCARD_JOINED_KEY = 'azzurro-postcard-club-joined';
+const TYPEFORM_ID = '01KXD5DTXYWK3CST9QCK4STX6S';
+
+let postcardPopup = null;
 
 let viewedArtworks = new Set(
   JSON.parse(localStorage.getItem(STAR_STORAGE_KEY) || '[]')
@@ -368,7 +371,6 @@ function createFairyPixel(x, y) {
     pixel.remove();
   }, 950);
 }
-
 // ---------------- STAR COUNTER ----------------
 
 function updateStarCounter() {
@@ -376,24 +378,40 @@ function updateStarCounter() {
   if (!counter) return;
 
   const count = viewedArtworks.size;
-  counter.textContent = `⭐ ${count} / ${STAR_GOAL}`;
+  const alreadyJoined =
+    localStorage.getItem(POSTCARD_JOINED_KEY) === 'yes';
+
+  if (alreadyJoined) {
+    counter.textContent = '💌 Postcard Club joined';
+    counter.classList.add('prize-ready');
+    return;
+  }
 
   if (count >= STAR_GOAL) {
     counter.textContent = '🎁 Postcard Club';
     counter.classList.add('prize-ready');
+    return;
   }
+
+  counter.textContent = `⭐ ${count} / ${STAR_GOAL}`;
+  counter.classList.remove('prize-ready');
 }
 
 function awardStar(fileName) {
   if (!fileName || viewedArtworks.has(fileName)) return;
 
   viewedArtworks.add(fileName);
-  localStorage.setItem(STAR_STORAGE_KEY, JSON.stringify([...viewedArtworks]));
+
+  localStorage.setItem(
+    STAR_STORAGE_KEY,
+    JSON.stringify([...viewedArtworks])
+  );
 
   updateStarCounter();
   showStarFloat();
 
   const counter = document.getElementById('star-counter');
+
   if (counter) {
     counter.classList.remove('star-bump');
     void counter.offsetWidth;
@@ -401,7 +419,7 @@ function awardStar(fileName) {
   }
 
   if (viewedArtworks.size === STAR_GOAL) {
-    setTimeout(showPrizeModal, 500);
+    setTimeout(openPostcardClub, 500);
   }
 }
 
@@ -414,101 +432,112 @@ function showStarFloat() {
   const float = document.createElement('div');
   float.className = 'star-float';
   float.textContent = '+1 ⭐';
-  float.style.left = rect.left + rect.width / 2 - 18 + 'px';
-  float.style.top = rect.top + rect.height + 8 + 'px';
+
+  float.style.left =
+    rect.left + rect.width / 2 - 18 + 'px';
+
+  float.style.top =
+    rect.top + rect.height + 8 + 'px';
 
   document.body.appendChild(float);
 
-  setTimeout(() => float.remove(), 950);
+  setTimeout(() => {
+    float.remove();
+  }, 950);
 }
 
-function showPrizeModal() {
-  const prize = document.getElementById('star-prize');
-  if (!prize) return;
+// ---------------- POSTCARD CLUB ----------------
 
-  updatePostcardClubState();
-  prize.classList.add('active');
-}
-function updatePostcardClubState() {
-  const formPanel = document.getElementById('postcard-form-panel');
-  const joinedPanel = document.getElementById('postcard-joined-panel');
-
-  if (!formPanel || !joinedPanel) return;
-
+function openPostcardClub() {
   const alreadyJoined =
     localStorage.getItem(POSTCARD_JOINED_KEY) === 'yes';
 
   if (alreadyJoined) {
-    formPanel.hidden = true;
-    joinedPanel.hidden = false;
-  } else {
-    formPanel.hidden = false;
-    joinedPanel.hidden = true;
+    showAlreadyJoinedToast();
+    return;
   }
+
+  if (
+    !window.tf ||
+    typeof window.tf.createPopup !== 'function'
+  ) {
+    console.error('Typeform popup script has not loaded.');
+    return;
+  }
+
+  if (!postcardPopup) {
+    postcardPopup = window.tf.createPopup(TYPEFORM_ID, {
+      size: 100,
+      opacity: 85,
+
+      onSubmit: () => {
+        localStorage.setItem(
+          POSTCARD_JOINED_KEY,
+          'yes'
+        );
+
+        updateStarCounter();
+
+        /*
+        We deliberately leave the Typeform open here
+        so its original completion screen remains visible.
+        */
+      }
+    });
+  }
+
+  postcardPopup.open();
 }
 
-/*
-Typeform calls this only after a successful submission.
+function showAlreadyJoinedToast() {
+  let toast =
+    document.getElementById('postcard-joined-toast');
 
-It must be attached to window because the Typeform embed
-looks for the callback in global scope.
-*/
-window.handlePostcardSubmit = function ({ formId, responseId }) {
-  localStorage.setItem(POSTCARD_JOINED_KEY, 'yes');
+  if (!toast) {
+    toast = document.createElement('div');
 
-  console.log(
-    `Postcard Club joined through form ${formId}. Response: ${responseId}`
-  );
+    toast.id = 'postcard-joined-toast';
+    toast.className = 'postcard-joined-toast';
 
-  /*
-  Deliberately do not replace the Typeform immediately.
-  This lets its lovely ending screen remain visible
-  for the current session.
-  */
-};
+    toast.innerHTML = `
+      <strong>⭐ Already joined!</strong>
+      <span>
+        You’re already in the Postcard Club,
+        you magnificent completionist.
+      </span>
+    `;
+
+    document.body.appendChild(toast);
+  }
+
+  toast.classList.remove('active');
+
+  void toast.offsetWidth;
+
+  toast.classList.add('active');
+
+  clearTimeout(toast.hideTimer);
+
+  toast.hideTimer = setTimeout(() => {
+    toast.classList.remove('active');
+  }, 3200);
+}
+
+// ---------------- STAR SYSTEM INIT ----------------
 
 document.addEventListener('DOMContentLoaded', () => {
-
   updateStarCounter();
 
-  const counter = document.getElementById('star-counter');
-  const prize = document.getElementById('star-prize');
-  const closeButton = document.getElementById('star-prize-close');
+  const counter =
+    document.getElementById('star-counter');
 
-  // Clicking the counter reopens the Postcard Club once unlocked.
   if (counter) {
     counter.addEventListener('click', () => {
       if (viewedArtworks.size >= STAR_GOAL) {
-        showPrizeModal();
+        openPostcardClub();
       }
     });
   }
-
-  // X button
-  if (closeButton) {
-    closeButton.addEventListener('click', () => {
-      prize.classList.remove('active');
-    });
-  }
-
-  // Click outside white panel
-  if (prize) {
-    prize.addEventListener('click', (e) => {
-      if (e.target === prize) {
-        prize.classList.remove('active');
-      }
-    });
-  }
-
-  // ESC closes popup
-  document.addEventListener('keydown', (e) => {
-    if (
-      e.key === 'Escape' &&
-      prize &&
-      prize.classList.contains('active')
-    ) {
-      prize.classList.remove('active');
-    }
-  });
+});
 
 });
