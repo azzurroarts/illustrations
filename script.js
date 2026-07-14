@@ -382,7 +382,7 @@ function updateStarCounter() {
     localStorage.getItem(POSTCARD_JOINED_KEY) === 'yes';
 
   if (alreadyJoined) {
-    counter.textContent = '💌 Postcard Club joined';
+    counter.textContent = '✅ Postcard Club Joined';
     counter.classList.add('prize-ready');
     return;
   }
