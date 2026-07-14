@@ -467,10 +467,11 @@ function openPostcardClub() {
 
   if (!postcardPopup) {
     postcardPopup = window.tf.createPopup(TYPEFORM_ID, {
-      size: 100,
-      opacity: 85,
+  size: 96,
+  opacity: 92,
+  keepSession: true,
 
-      onSubmit: () => {
+  onSubmit: () => {
         localStorage.setItem(
           POSTCARD_JOINED_KEY,
           'yes'
