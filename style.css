@@ -722,3 +722,63 @@ This gives it enough vertical room to function properly.
   font-weight: 700;
   line-height: 1.45;
 }
+/* ---------------- LARGE FLOATING TYPEFORM POPUP ---------------- */
+
+/* Prevent Typeform opening from shifting the page underneath */
+html,
+body {
+  scrollbar-gutter: stable;
+}
+
+/* Keep the portfolio visually frozen while Typeform is open */
+body:has(.tf-v1-popup) {
+  overflow: hidden !important;
+}
+
+/* Typeform's dark overlay */
+.tf-v1-popup {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+}
+
+/* Make the popup panel huge and properly floating */
+.tf-v1-popup-wrapper {
+  width: 96vw !important;
+  height: 94vh !important;
+  max-width: none !important;
+  max-height: none !important;
+
+  top: 50% !important;
+  left: 50% !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  border-radius: 18px !important;
+  overflow: hidden !important;
+
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.55),
+    0 0 0 3px rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Force the actual Typeform iframe to fill the panel */
+.tf-v1-popup-wrapper iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 94vh !important;
+  border: 0 !important;
+}
+
+/* Mobile: use virtually the full screen */
+@media (max-width: 768px) {
+  .tf-v1-popup-wrapper {
+    width: calc(100vw - 12px) !important;
+    height: calc(100dvh - 12px) !important;
+    border-radius: 12px !important;
+  }
+
+  .tf-v1-popup-wrapper iframe {
+    min-height: calc(100dvh - 12px) !important;
+  }
+}
